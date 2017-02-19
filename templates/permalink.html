@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+{{ post.showPermalink(username) | safe }}
+
+<br><br>
+
+<div class="container bd-example">
+    <div class="comment-form">
+        <h3>LEAVE A REPLY</h3>
+        <br>
+        <form method="post" action="/blog/newcomment">
+            <input type="hidden" id="key" name="key" value={{post_id}}>
+            <div class="form-group row">
+                <label for="subject" class="col-sm-2 col-form-label">Author</label>
+                <div class="col-sm-10">
+                    <p class="form-control-static">{{ username }}</p>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label for="content" class="col-sm-2 col-form-label">Comment</label>
+                <div class="col-sm-10">
+                    <textarea rows="5" class="form-control" placeholder="Enter your text here..." id="content" name="content">{{ content }}</textarea>
+                </div>
+            </div>
+
+            <div class="form-group row text-center">
+                <span class="error">{{ error }}</span>
+            </div>
+
+            <div class="form-group row">
+                <button type="submit" class="btn btn-primary btn-block default-height">Submit</button>
+            </div>
+        </form>
+    </div>
+    <hr>
+
+{% for comment in comments %}
+    {{ comment.render() | safe }}
+{% endfor %}
+
+</div>
+
+{% endblock %}

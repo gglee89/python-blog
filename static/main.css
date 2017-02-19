@@ -1,0 +1,186 @@
+.login-area {
+    font-size: 13px;
+    color: gray;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+}
+
+.login-link {
+    color: gray;
+    text-decoration: none;
+}
+
+.login-link:visited {
+    color: gray;
+}
+
+.login-link:hover {
+    text-decoration: underline;
+}
+
+h2 {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+.error {
+    color: red;
+}
+
+label {
+  display: block;
+  font-size: 20px;
+}
+
+label + label {
+    margin-top: 20px;
+}
+
+textarea {
+  width: 500px;
+  height: 400px;
+  font-size: 17px;
+  font-family: monospace;
+}
+
+.main-title {
+    display: block;
+    color: #222;
+    font-size: 40px;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 30px;
+    text-decoration: none;
+}
+
+/* POST SECTION */
+.post + .post {
+    margin-top: 15px;
+}
+
+.post-heading {
+    position: relative;
+    border-bottom: 3px solid #666;
+}
+
+.post-title {
+    font-size: 24px;
+    font-weight: bold;
+
+    text-decoration: none;
+    color: #333;
+}
+
+.post-text {
+    background: lightgray;
+    padding: 15px;
+}
+
+.post-title:visisted {
+    color: #333;
+}
+
+.post-date {
+    position: absolute;
+    right: 0px;
+    bottom: 0px;
+    color: #999;
+
+}
+
+.post-content {
+    margin-top: 5px;
+}
+
+
+/* COMMENTS SECTION */
+.comment {
+    margin-top: 15px;
+}
+
+.comment-heading {
+    position: relative;
+    border-bottom: 3px solid #666;
+}
+
+.comment-title {
+    font-size: 24px;
+    font-weight: bold;
+
+    text-decoration: none;
+    color: #333;
+}
+
+.comment-text {
+    background: lightgray;
+    padding: 15px;
+}
+
+.comment-title:visisted {
+    color: #333;
+}
+
+.comment-date {
+    position: absolute;
+    right: 0px;
+    bottom: 0px;
+    color: #999;
+
+}
+
+.comment-content {
+    margin-top: 5px;
+}
+
+.comment-form {
+    padding: 0 80px;
+}
+
+.age {
+    position: absolute;
+    bottom: 0px;
+    right: 0px;
+    color: gray;
+    font-size: 12px;
+}
+
+.bd-example {
+    padding-top: 2rem;
+    padding-left: 15rem;
+    padding-right: 15rem;
+    padding-bottom: 2rem;
+    margin-right: 0;
+    margin-bottom: 0;
+    margin-left: 0;
+    border-width: .2rem;
+}
+
+.default-height {
+    height: 40px;
+}
+
+.default-line-height {
+    line-height: 40px;
+}
+
+.error-center {
+    display: block;
+    text-align: center;
+}
+
+.inline-spacing {
+    border-right: 1px solid #000;
+    margin-right: 5px;
+    padding-right: 5px;
+}
+
+.can-edit {
+    border: 1px solid #333;
+    color: #333;
+    font-size: 12px;
+    margin: 5px;
+    display: inline-block;
+    padding: 0 10px;
+}

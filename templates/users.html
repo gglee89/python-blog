@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container bd-example">
+    <h1>Users</h1>
+    <br>
+    
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Username</th>
+                <th>Password</th>
+            </tr>
+        </thead>
+        {% for u in users %}
+        <tr>
+            <td>{{ u.name }}</td>
+            <td>{{ u.pw_hash }}</td>
+            <td>{{ u.email }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+
+{% endblock %}

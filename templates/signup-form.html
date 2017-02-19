@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container bd-example">
+    <h1>Signup</h1>
+    <br>
+    <form method="post">
+        <form method="post">
+        <div class="form-group row">
+            <label for="username" class="col-sm-2 col-form-label">Username</label>
+            <div class="col-sm-10">
+                <input type="text" class="form-control" id="username" name="username" value="{{username}}">
+            </div>
+            <span class="error error-center">{{ error_username }}</span>
+        </div>
+        <div class="form-group row">
+            <label for="password" class="col-sm-2 col-form-label">Password</label>
+            <div class="col-sm-10">
+                <input type="password" class="form-control" id="password" name="password" value="{{password}}">
+            </div>
+            <span class="error error-center">{{ error_password }}</span>
+        </div>
+        <div class="form-group row">
+            <label for="verify" class="col-sm-2 col-form-label">Verify</label>
+            <div class="col-sm-10">
+                <input type="password" class="form-control" id="verify" name="verify" value="{{verify}}">
+            </div>
+            <span class="error error-center">{{ error_verify }}</span>
+        </div>
+        <div class="form-group row">
+            <label for="email" class="col-sm-2 col-form-label">Email</label>
+            <div class="col-sm-10">
+                <input type="email" class="form-control" id="email" name="email" value="{{email}}">
+            </div>
+            <span class="error error-center">{{ error_email }}</span>
+        </div>
+                                
+        <div class="form-group row">
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-primary btn-block default-height">Signup</button>
+            </div>                
+            <div class="col-md-10">
+                <span class="default-height default-line-height">already a member? <a href="/login">Login</a></span>
+            </div>
+        </div>
+    </form>
+</body>
+
+{% endblock %}

@@ -1,0 +1,17 @@
+<div>    
+    <div class="comment">
+        <div class="comment-heading">
+            <div class="comment-title">                
+                Written by {{ c.author }}
+            </div>
+            <div class="comment-date">
+                {{ c.created.strftime("%b %d %Y - %H:%m %Z") }}                
+            </div>        
+        </div>
+        <div class="comment-content">            
+            <div class="comment-text">
+                {{ c._render_text | safe }}
+            </div>
+        </div>
+    </div>
+</div>
