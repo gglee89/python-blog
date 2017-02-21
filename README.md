@@ -11,4 +11,3 @@
 # How to see this application running.
 (1) Access the link: [http://gl-forum.appspot.com/](http://gl-forum.appspot.com/)
 (2) Clone this repository and run with GCloud using: **dev_appserver.py .**
-

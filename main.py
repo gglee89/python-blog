@@ -1,6 +1,7 @@
 import webapp2
 
-from Blog import BlogFront, PostPage, NewPost, EditPost, DeletePost, LikePost, NewComment, BlogHandler
+from Blog import BlogFront, PostPage, NewPost, EditPost, DeletePost
+from Blog import LikePost, NewComment, BlogHandler
 from Account import Login, Logout, Signup, Register, Users, Welcome
 
 app = webapp2.WSGIApplication([('/', BlogFront),
@@ -16,5 +17,4 @@ app = webapp2.WSGIApplication([('/', BlogFront),
                                ('/logout', Logout),
                                ('/users', Users),
                                ('/welcome', Welcome)
-                               ],
-                                debug=True)
+                               ], debug=True)
