@@ -1,7 +1,7 @@
-<div class="container bd-example">    
+<div class="container bd-example">
     <div class="post">
         <div class="post-heading">
-            <div class="post-title">                
+            <div class="post-title">
                 <a href="/blog/{{p._key}}" style="text-decoration: none;">{{ p.subject }}</a>
                 {% if p._can_edit %}
                 <span class="can-edit">You're the author of this post. You can edit/delete.</span>
@@ -9,19 +9,19 @@
             </div>
             <div class="post-date">
                 {{ p.created.strftime("%b %d %Y") }}
-            </div>        
+            </div>
         </div>
         <div class="post-content">
             <div class="post-author">
-                <span class="inline-spacing">Written by {{ p.author }}</span>                
+                <span class="inline-spacing">Written by {{ p.author.name }}</span>
                 {% if p._can_edit %}
-                
+
                 {% else %}
                 <span class="inline-spacing">
-                    <a href="/blog/like/{{p._key}}" style="text-decoration: none;"><i class="glyphicon glyphicon-thumbs-up"></i> {{ p.likes }} Likes </a>
+                    <a href="/blog/like/{{p._key}}" style="text-decoration: none;"><i class="glyphicon glyphicon-thumbs-up"></i> {{ p.likesCount }} Likes </a>
                 </span>
                 <span><i class="glyphicon glyphicon-comment"></i> {{ comments_length }} comments </span>
-                {% endif %}                
+                {% endif %}
             </div>
             <br>
             <div class="post-text">

@@ -5,7 +5,9 @@ import webapp2
 
 
 class BlogHandler(webapp2.RequestHandler):
+    """ Blog handler """
     def write(self, *a, **kw):
+        """ Use it as the writer """
         self.response.write(*a, **kw)
 
     def render_str(self, template, **params):

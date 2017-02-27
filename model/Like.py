@@ -1,9 +1,16 @@
 import utils
+import sys
+
+from model.User import User
 
 from google.appengine.ext import db
-from model.Post import Post
 
 
 class Like(db.Model):
-    user = db.ReferenceProperty(Post)
-    liked = db.BooleanProperty()
+    author = db.ReferenceProperty(User)
+    like = db.BooleanProperty()
+
+    @classmethod
+    def countLikesByPost(cls, post):
+        post_likes = Like.all().filter('post=', post).count()
+        return post_likes
