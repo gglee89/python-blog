@@ -1,4 +1,4 @@
-# About this application
+# Description
 - **Project:** Blog app built with Python using Google App Engine.
 - **Description:** This is an application built as part of the FSND (Fullstack Nanodegree) certificate from Udacity. To check it out more, here's the link to their syllabus [https://classroom.udacity.com/nanodegrees/nd004/syllabus](https://classroom.udacity.com/nanodegrees/nd004/syllabus)
 - **License:** GNU GENERAL PUBLIC LICENSE
@@ -8,6 +8,15 @@
 - **Text editor used:** VSCode.
 - **VSCode extensions used for this project:** Python 0.5.8 [Linting, Debugging], Python for VSCode.
 
-# How to see this application running.
-(1) Access the link: [http://gl-forum.appspot.com/](http://gl-forum.appspot.com/)
-(2) Clone this repository and run with GCloud using: **dev_appserver.py .**
+## Installation
+```
+(1) Install & run Gcloud
+(2) git clone https://github.com/gglee89/python-blog.git
+(3) Upload programs to GCloud **dev_appserver.py**
+```
+
+## Usage
+Access the link: [http://gl-forum.appspot.com/](http://gl-forum.appspot.com/)
+
+## License
+Free for usage
