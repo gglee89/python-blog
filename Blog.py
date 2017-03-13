@@ -1,6 +1,5 @@
 from model.Post import Post
 from model.User import User
-from model.Like import Like
 from model.Comment import Comment
 import webapp2
 import os
@@ -16,11 +15,14 @@ class BlogFront(BlogHandler):
     """ Render blog's front page """
     def get(self):
         """ Front page's GET render """
-        posts = db.GqlQuery("""Select * from Post order
-                            by created desc limit 10""")
-        username = self.user and self.user.name
+        if self.user:
+            posts = db.GqlQuery("""Select * from Post order
+                                by created desc limit 10""")
+            username = self.user and self.user.name
 
-        self.render("front.html", username=username, posts=posts)
+            self.render("front.html", username=username, posts=posts)
+        else:
+            self.redirect('/login')
 
 
 class PostPage(BlogHandler):
@@ -71,15 +73,12 @@ class LikePost(BlogHandler):
                                    int(post_id),
                                    parent=utils.blog_key())
             post = db.get(key)
-            author = User.by_name(self.user.name)
-            like = True
+            post.likes = int(post.likes) + 1
+            post.save()
 
             if not post:
                 self.error(404)
                 return
-
-            post_like = Like(author=author, post=post, like=like)
-            post_like.put()
 
             self.redirect('/blog/%s' % str(post.key().id()))
         else:
@@ -89,7 +88,7 @@ class LikePost(BlogHandler):
 class EditPost(BlogHandler):
     """ Edit post class """
     def get(self):
-        """ Like post class - get method """
+        """ Edit post class - get method """
         post_id = self.request.get("key")
         key = db.Key.from_path('Post',
                                int(post_id),
@@ -106,7 +105,7 @@ class EditPost(BlogHandler):
             self.redirect('/blog')
 
     def post(self):
-        """ Like post class - post method """
+        """ Edit post class - post method """
         post_id = self.request.get("key")
         key = db.Key.from_path('Post',
                                int(post_id),

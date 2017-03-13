@@ -1,6 +1,5 @@
 import utils
 from User import User
-from Like import Like
 
 from google.appengine.ext import db
 
@@ -10,8 +9,20 @@ class Post(db.Model):
     subject = db.StringProperty(required=True)
     content = db.TextProperty(required=True)
     author = db.ReferenceProperty(User, collection_name="posts")
+    likes = db.IntegerProperty(required=False, default=0)
     created = db.DateTimeProperty(auto_now_add=True)
     last_modified = db.DateTimeProperty(auto_now=True)
+
+    @property
+    def like(self):
+        """ like property """
+        print 'Getting like value'
+        return self.likes
+
+    @like.setter
+    def like(self, value):
+        print 'Settomg like value'
+        self.likes = value
 
     def render(self, username):
         """ Post class render method """
@@ -20,7 +31,6 @@ class Post(db.Model):
         self._can_edit = False
 
         key = db.Key.from_path('Post', int(self._key), parent=utils.blog_key())
-        self.likesCount = Like.countLikesByPost(db.get(key))
 
         if self.author == username:
             self._can_edit = True
