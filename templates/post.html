@@ -14,11 +14,13 @@
         <div class="post-content">
             <div class="post-author">
                 <span class="inline-spacing">Written by {{ p.author.name }}</span>
-                {% if p._can_edit %}
-
-                {% else %}
+                {% if not p._can_edit %}
                 <span class="inline-spacing">
-                    <a href="/blog/like/{{p._key}}" style="text-decoration: none;"><i class="glyphicon glyphicon-thumbs-up"></i> {{ p.likes }} Likes </a>
+                    {% if p.authorLiked %}
+                    <a href="/blog/unlike/{{p._key}}" style="color: red; text-decoration: none;"><i class="glyphicon glyphicon-thumbs-down"></i> {{ p.likes }} Unlike </a>
+                    {% else %}
+                    <a href="/blog/like/{{p._key}}" style="text-decoration: none;"><i class="glyphicon glyphicon-thumbs-up"></i> {{ p.likes }} Like </a>
+                    {% endif %}
                 </span>
                 <span><i class="glyphicon glyphicon-comment"></i> {{ comments_length }} comments </span>
                 {% endif %}

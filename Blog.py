@@ -10,23 +10,33 @@ import utils
 
 from google.appengine.ext import db
 
+def login_required(func):
+    """
+    A decorator to confirm a user is logged in or redirect as needed
+    """
+    def login(self, *args, **kwargs):
+        """ Redirect to login if user is not logged in, else execute func """
+        if not self.user:
+            self.redirect('/login')
+        else:
+            func(self, *args, **kwargs)
+    return login
 
 class BlogFront(BlogHandler):
     """ Render blog's front page """
+    @login_required
     def get(self):
         """ Front page's GET render """
-        if self.user:
-            posts = db.GqlQuery("""Select * from Post order
-                                by created desc limit 10""")
-            username = self.user and self.user.name
+        posts = db.GqlQuery("""Select * from Post order
+                            by created desc limit 10""")
+        username = self.user and self.user.name
 
-            self.render("front.html", username=username, posts=posts)
-        else:
-            self.redirect('/login')
+        self.render("front.html", username=username, posts=posts)
 
 
 class PostPage(BlogHandler):
     """ Render blog's post """
+    @login_required
     def get(self, post_id):
         """ Render blog's post - get method """
         key = db.Key.from_path('Post', int(post_id), parent=utils.blog_key())
@@ -46,6 +56,7 @@ class PostPage(BlogHandler):
 
 class DeletePost(BlogHandler):
     """ Delete post """
+    @login_required
     def get(self, post_id):
         """ Delete post - get method """
         key = db.Key.from_path('Post', int(post_id), parent=utils.blog_key())
@@ -66,27 +77,46 @@ class DeletePost(BlogHandler):
 
 class LikePost(BlogHandler):
     """ Like post class """
+    @login_required
     def get(self, post_id):
         """ Like post - get method """
-        if self.user:
-            key = db.Key.from_path('Post',
-                                   int(post_id),
-                                   parent=utils.blog_key())
-            post = db.get(key)
-            post.likes = int(post.likes) + 1
-            post.save()
+        key = db.Key.from_path('Post',
+                               int(post_id),
+                               parent=utils.blog_key())
+        post = db.get(key)
+        post.likes = int(post.likes) + 1
+        post.authorLiked = True
+        post.save()
 
-            if not post:
-                self.error(404)
-                return
+        if not post:
+            self.error(404)
+            return
 
-            self.redirect('/blog/%s' % str(post.key().id()))
-        else:
-            self.redirect('/login')
+        self.redirect('/blog/%s' % str(post.key().id()))
+
+class UnlikePost(BlogHandler):
+    """ Like post class """
+    @login_required
+    def get(self, post_id):
+        """ Like post - get method """
+        key = db.Key.from_path('Post',
+                               int(post_id),
+                               parent=utils.blog_key())
+        post = db.get(key)
+        post.likes = int(post.likes) - 1
+        post.authorLiked = False
+        post.save()
+
+        if not post:
+            self.error(404)
+            return
+
+        self.redirect('/blog/%s' % str(post.key().id()))
 
 
 class EditPost(BlogHandler):
     """ Edit post class """
+    @login_required
     def get(self):
         """ Edit post class - get method """
         post_id = self.request.get("key")
@@ -104,6 +134,7 @@ class EditPost(BlogHandler):
         else:
             self.redirect('/blog')
 
+    @login_required
     def post(self):
         """ Edit post class - post method """
         post_id = self.request.get("key")
@@ -139,86 +170,78 @@ class EditPost(BlogHandler):
 
 class NewPost(BlogHandler):
     """ New post class """
+    @login_required
     def get(self):
         """ New post class - get method """
-        if self.user:
-            self.render("newpost.html",
-                        title="New Post",
-                        username=self.user.name)
-        else:
-            self.redirect('/login')
+        self.render("newpost.html",
+                    title="New Post",
+                    username=self.user.name)
 
+    @login_required
     def post(self):
         """ New post class - post method """
-        if self.user:
-            subject = self.request.get("subject")
-            content = self.request.get("content")
-            author = User.by_name(self.user.name)
+        subject = self.request.get("subject")
+        content = self.request.get("content")
+        author = User.by_name(self.user.name)
 
-            error = ""
+        error = ""
 
-            if subject and content:
-                to_post = Post(parent=utils.blog_key(),
-                               subject=subject,
-                               content=content,
-                               author=author)
-                to_post.put()
-                self.redirect('/blog/%s' % str(to_post.key().id()))
-            else:
-                error = "subject and content, please!"
-                self.render("newpost.html",
-                            title="New Post",
-                            username=self.user.name,
-                            subject=subject,
-                            content=content,
-                            error=error)
+        if subject and content:
+            to_post = Post(parent=utils.blog_key(),
+                           subject=subject,
+                           content=content,
+                           author=author)
+            to_post.put()
+            self.redirect('/blog/%s' % str(to_post.key().id()))
         else:
-            self.redirect('/login')
+            error = "subject and content, please!"
+            self.render("newpost.html",
+                        title="New Post",
+                        username=self.user.name,
+                        subject=subject,
+                        content=content,
+                        error=error)
 
 
 # Comment section
 class NewComment(BlogHandler):
     """ New comment class """
+    @login_required
     def get(self):
         """ New comment class - get method """
-        if self.user:
-            post_id = self.request.get("key")
-            key = db.Key.from_path('Post',
-                                   int(post_id),
-                                   parent=utils.blog_key())
-            post = db.get(key)
+        post_id = self.request.get("key")
+        key = db.Key.from_path('Post',
+                               int(post_id),
+                               parent=utils.blog_key())
+        post = db.get(key)
 
-            if not post:
-                self.error(404)
-                return
+        if not post:
+            self.error(404)
+            return
 
-            if post.key().id():
-                self.redirect('/blog/%s' % str(post.key().id()))
-            else:
-                self.redirect('/blog')
-        else:
-            self.redirect('/login')
-
-    def post(self):
-        """ New comment class """
-        if self.user:
-            post_id = self.request.get("key")
-            key = db.Key.from_path('Post',
-                                   int(post_id),
-                                   parent=utils.blog_key())
-            post = db.get(key)
-
-            if not post:
-                self.error(404)
-                return
-
-            content = self.request.get("content")
-            author = User.by_name(self.user.name)
-
-            if content:
-                comm = Comment(post=post, content=content, author=author)
-                comm.put()
-
+        if post.key().id():
             self.redirect('/blog/%s' % str(post.key().id()))
         else:
-            self.redirect('/login')
+            self.redirect('/blog')
+
+    @login_required
+    def post(self):
+        """ New comment class """
+        post_id = self.request.get("key")
+        key = db.Key.from_path('Post',
+                               int(post_id),
+                               parent=utils.blog_key())
+        post = db.get(key)
+
+        if not post:
+            self.error(404)
+            return
+
+        content = self.request.get("content")
+        author = User.by_name(self.user.name).name
+
+        if content:
+            comm = Comment(post=post, content=content, author=author)
+            comm.put()
+
+        self.redirect('/blog/%s' % str(post.key().id()))
