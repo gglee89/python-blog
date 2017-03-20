@@ -22,7 +22,7 @@ class Post(db.Model):
 
     @like.setter
     def like(self, value):
-        print 'Settomg like value'
+        print 'Setting like value'
         self.likes = value
 
     def render(self, username):

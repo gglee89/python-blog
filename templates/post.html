@@ -4,7 +4,7 @@
             <div class="post-title">
                 <a href="/blog/{{p._key}}" style="text-decoration: none;">{{ p.subject }}</a>
                 {% if p._can_edit %}
-                <span class="can-edit">You're the author of this post. You can edit/delete.</span>
+                <span class="can-edit">{{ message }}</span>
                 {% endif %}
             </div>
             <div class="post-date">

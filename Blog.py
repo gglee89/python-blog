@@ -66,7 +66,7 @@ class DeletePost(BlogHandler):
             self.error(404)
             return
 
-        if post.author:
+        if post.author.key().id() == self.user.key().id():
             post.delete()
             self.render('delete.html',
                         message="Post succesfully deleted")
@@ -84,15 +84,20 @@ class LikePost(BlogHandler):
                                int(post_id),
                                parent=utils.blog_key())
         post = db.get(key)
-        post.likes = int(post.likes) + 1
-        post.authorLiked = True
-        post.save()
 
         if not post:
             self.error(404)
             return
 
-        self.redirect('/blog/%s' % str(post.key().id()))
+        if post.author.key().id() == self.user.key().id():
+            message = "Can't like this post because you are the author of this post"
+            self.render('front.html', message=message)
+        else:
+            post.likes = int(post.likes) + 1
+            post.authorLiked = True
+            post.save()
+
+            self.redirect('/blog/%s' % str(post.key().id()))
 
 class UnlikePost(BlogHandler):
     """ Like post class """
@@ -103,21 +108,26 @@ class UnlikePost(BlogHandler):
                                int(post_id),
                                parent=utils.blog_key())
         post = db.get(key)
-        post.likes = int(post.likes) - 1
-        post.authorLiked = False
-        post.save()
 
         if not post:
             self.error(404)
             return
 
-        self.redirect('/blog/%s' % str(post.key().id()))
+        if post.author.key().id() == self.user.key().id():
+            message = "Can't unlike this post because you are the author of this post"
+            self.render('front.html', message=message)
+        else:
+            post.likes = int(post.likes) - 1
+            post.authorLiked = False
+            post.save()
+
+            self.redirect('/blog/%s' % str(post.key().id()))
 
 
 class EditPost(BlogHandler):
     """ Edit post class """
     @login_required
-    def get(self):
+    def get(self, post_id):
         """ Edit post class - get method """
         post_id = self.request.get("key")
         key = db.Key.from_path('Post',
@@ -135,7 +145,7 @@ class EditPost(BlogHandler):
             self.redirect('/blog')
 
     @login_required
-    def post(self):
+    def post(self, post_id):
         """ Edit post class - post method """
         post_id = self.request.get("key")
         key = db.Key.from_path('Post',
@@ -152,20 +162,21 @@ class EditPost(BlogHandler):
         post.author = self.user.name
         error = ""
 
-        if post.subject and post.content:
-            post.save()
-
-            time.sleep(0.1)
-            self.redirect('/blog')
+        if post.author.key().id() == self.user.key().id():
+            if post.subject and post.content:
+                post.save()
+                self.redirect('/blog')
+            else:
+                error = "subject and content, please!"
+                self.render("editpost.html",
+                            title="Edit Post",
+                            username=self.user.name,
+                            subject=post.subject,
+                            content=post.content,
+                            author=post.author,
+                            error=error)
         else:
-            error = "subject and content, please!"
-            self.render("editpost.html",
-                        title="Edit Post",
-                        username=self.user.name,
-                        subject=post.subject,
-                        content=post.content,
-                        author=post.author,
-                        error=error)
+            self.redirect("/login")
 
 
 class NewPost(BlogHandler):
@@ -238,7 +249,7 @@ class NewComment(BlogHandler):
             return
 
         content = self.request.get("content")
-        author = User.by_name(self.user.name).name
+        author = User.by_name(self.user.name)
 
         if content:
             comm = Comment(post=post, content=content, author=author)

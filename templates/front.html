@@ -2,9 +2,13 @@
 
 {% block content %}
 
-{% for p in posts %}
-    {{ p.render(username) | safe }}
-    <br><br>
-{% endfor %}
+{% if not message %}
+    {% for p in posts %}
+        {{ p.render(username) | safe }}
+        <br><br>
+    {% endfor %}
+{% else %}
+    <p class="text-center" style="color: red; margin-top: 50px;">{{ message }}</p>
+{% endif %}
 
 {% endblock %}
