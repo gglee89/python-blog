@@ -127,25 +127,12 @@ class UnlikePost(BlogHandler):
 class EditPost(BlogHandler):
     """ Edit post class """
     @login_required
-    def get(self, post_id):
+    def get(self):
         """ Edit post class - get method """
-        post_id = self.request.get("key")
-        key = db.Key.from_path('Post',
-                               int(post_id),
-                               parent=utils.blog_key())
-        post = db.get(key)
-
-        if not post:
-            self.error(404)
-            return
-
-        if post.key().id():
-            self.redirect('/blog/%s' % str(post.key().id()))
-        else:
-            self.redirect('/blog')
+        self.redirect('/blog')
 
     @login_required
-    def post(self, post_id):
+    def post(self):
         """ Edit post class - post method """
         post_id = self.request.get("key")
         key = db.Key.from_path('Post',
@@ -157,14 +144,18 @@ class EditPost(BlogHandler):
             self.error(404)
             return
 
-        post.subject = self.request.get("subject")
-        post.content = self.request.get("content")
-        post.author = self.user.name
-        error = ""
-
         if post.author.key().id() == self.user.key().id():
+            post.subject = self.request.get("subject")
+            post.content = self.request.get("content")
+            post.author = self.user
+            error = ""
+
             if post.subject and post.content:
                 post.save()
+
+                # Setting timer to give time for the Server to SAVE
+                time.sleep(2)
+
                 self.redirect('/blog')
             else:
                 error = "subject and content, please!"

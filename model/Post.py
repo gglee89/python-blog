@@ -33,7 +33,7 @@ class Post(db.Model):
 
         key = db.Key.from_path('Post', int(self._key), parent=utils.blog_key())
 
-        if self.author == username:
+        if self.author.name == username:
             self._can_edit = True
 
         return utils.render_str("post.html",
@@ -46,14 +46,12 @@ class Post(db.Model):
         self._can_edit = False
         self._is_permalink = True
 
-        if self.author == username:
+        if self.author.name == username:
             self._can_edit = True
-
-        if self.author == username:
             return utils.render_str("editpost.html",
                                     title="Edit post",
                                     username=username,
-                                    author=self.author,
+                                    author=self.author.name,
                                     subject=self.subject,
                                     content=self._render_text,
                                     key=self._key,
