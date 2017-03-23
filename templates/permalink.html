@@ -38,7 +38,7 @@
     <hr>
 
 {% for comment in post.comments %}
-    {{ comment.render() | safe }}
+    {{ comment.render(username) | safe }}
 {% endfor %}
 
 </div>

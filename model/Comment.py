@@ -11,6 +11,11 @@ class Comment(db.Model):
     author = db.ReferenceProperty(User, collection_name="comments")
     created = db.DateTimeProperty(auto_now_add=True)
 
-    def render(self):
+    def render(self, username):
+        self._isAuthor = False
+        if username == self.author.name:
+            self._isAuthor = True
+
         self._render_text = self.content.replace('\n', '<br>')
+        self._key = self.key().id()
         return utils.render_str("comment.html", c=self)

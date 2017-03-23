@@ -75,6 +75,27 @@ class DeletePost(BlogHandler):
                         message="Error attempting to delete post")
 
 
+class DeleteComment(BlogHandler):
+    """ Delete comment """
+    @login_required
+    def get(self, comment_id):
+        """ Delete comment - get method """
+        key = db.Key.from_path('Comment', int(comment_id))
+        comment = db.get(key)
+
+        if not comment:
+            self.error(404)
+            return
+
+        if comment.author.key().id() == self.user.key().id():
+            comment.delete()
+            self.render('delete.html',
+                        message="Comment succesfully deleted")
+        else:
+            self.render('delete.html',
+                        message="You can't delete this comment.")
+
+
 class LikePost(BlogHandler):
     """ Like post class """
     @login_required
@@ -90,7 +111,7 @@ class LikePost(BlogHandler):
             return
 
         if post.author.key().id() == self.user.key().id():
-            message = "Can't like this post because you are the author of this post"
+            message = "Authors can't like their own post"
             self.render('front.html', message=message)
         else:
             post.likes = int(post.likes) + 1
@@ -98,6 +119,7 @@ class LikePost(BlogHandler):
             post.save()
 
             self.redirect('/blog/%s' % str(post.key().id()))
+
 
 class UnlikePost(BlogHandler):
     """ Like post class """
@@ -114,7 +136,7 @@ class UnlikePost(BlogHandler):
             return
 
         if post.author.key().id() == self.user.key().id():
-            message = "Can't unlike this post because you are the author of this post"
+            message = "Authors can't like their post"
             self.render('front.html', message=message)
         else:
             post.likes = int(post.likes) - 1
@@ -185,7 +207,6 @@ class NewPost(BlogHandler):
         subject = self.request.get("subject")
         content = self.request.get("content")
         author = User.by_name(self.user.name)
-
         error = ""
 
         if subject and content:
@@ -246,4 +267,63 @@ class NewComment(BlogHandler):
             comm = Comment(post=post, content=content, author=author)
             comm.put()
 
+        # Setting timer to give time for the Server to SAVE
+        time.sleep(2)
         self.redirect('/blog/%s' % str(post.key().id()))
+
+
+class EditComment(BlogHandler):
+    """ Edit comment class """
+    @login_required
+    def get(self, comment_id):
+        """ Edit comment class """
+        key = db.Key.from_path('Comment',
+                               int(comment_id))
+        comment = db.get(key)
+
+        if not comment:
+            self.error(404)
+            return
+
+        if self.user.key().id() == comment.author.key().id():
+            self.render("editcomment.html",
+                        title="Edit Comment",
+                        key=comment_id,
+                        author=comment.author.name,
+                        content=comment.content)
+        else:
+            self.redirect('/login')
+
+    @login_required
+    def post(self, comment_id):
+        """ Edit comment class - POST """
+        key = db.Key.from_path('Comment',
+                               int(comment_id))
+
+        comment = db.get(key)
+
+        if not comment:
+            self.error(404)
+            return
+
+        if self.user.key().id() == comment.author.key().id():
+            comment.content = self.request.get("content")
+            error = ""
+
+            if comment.content:
+                comment.save()
+
+                #Setting timer to give time for the Server to SAVE
+                time.sleep(2)
+
+                self.redirect('/blog')
+            else:
+                error = "Fill in the content, please!"
+                self.render("editcomment.html",
+                            title="Edit Comment",
+                            username=self.user.name,
+                            content=comment.content,
+                            author=comment.author,
+                            error=error)
+        else:
+            self.redirect('/login')

@@ -1,16 +1,28 @@
-<div>    
+<div>
     <div class="comment">
         <div class="comment-heading">
-            <div class="comment-title">                
-                Written by {{ c.author }}
+            <div class="comment-title">
+                Written by {{ c.author.name }}
             </div>
             <div class="comment-date">
-                {{ c.created.strftime("%b %d %Y - %H:%m %Z") }}                
-            </div>        
+                {{ c.created.strftime("%b %d %Y - %H:%m %Z") }}
+            </div>
         </div>
-        <div class="comment-content">            
-            <div class="comment-text">
-                {{ c._render_text | safe }}
+        <div class="comment-content">
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="comment-text">
+                        {{ c._render_text | safe }}
+                    </div>
+                </div>
+                {% if c._isAuthor %}
+                <div class="col-md-2">
+                    <div class="comment-edit"><a href="/editcomment/{{c._key}}"><i class="glyphicon glyphicon-pencil"></i> Edit</a></div>
+                </div>
+                <div class="col-md-2">
+                    <div class="comment-delete"><a href="/deletecomment/{{c._key}}"><i class="glyphicon glyphicon-trash"></i> Delete</a></div>
+                </div>
+                {% endif %}
             </div>
         </div>
     </div>
