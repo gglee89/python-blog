@@ -16,7 +16,7 @@
                 <span class="inline-spacing">Written by {{ p.author.name }}</span>
                 {% if not p._can_edit %}
                 <span class="inline-spacing">
-                    {% if p.authorLiked %}
+                    {% if p.author.key().id() in p.liked_by: %}
                     <a href="/blog/unlike/{{p._key}}" style="color: red; text-decoration: none;"><i class="glyphicon glyphicon-thumbs-down"></i> {{ p.likes }} Unlike </a>
                     {% else %}
                     <a href="/blog/like/{{p._key}}" style="text-decoration: none;"><i class="glyphicon glyphicon-thumbs-up"></i> {{ p.likes }} Like </a>

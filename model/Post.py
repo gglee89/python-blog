@@ -9,21 +9,14 @@ class Post(db.Model):
     subject = db.StringProperty(required=True)
     content = db.TextProperty(required=True)
     author = db.ReferenceProperty(User, collection_name="posts")
-    authorLiked = db.BooleanProperty(required=False, default=False)
-    likes = db.IntegerProperty(required=False, default=0)
+    liked_by = db.ListProperty(int)
     created = db.DateTimeProperty(auto_now_add=True)
     last_modified = db.DateTimeProperty(auto_now=True)
 
     @property
-    def like(self):
+    def likes(self):
         """ like property """
-        print 'Getting like value'
-        return self.likes
-
-    @like.setter
-    def like(self, value):
-        print 'Setting like value'
-        self.likes = value
+        return len(self.liked_by)
 
     def render(self, username):
         """ Post class render method """

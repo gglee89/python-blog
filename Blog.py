@@ -24,7 +24,6 @@ def login_required(func):
 
 class BlogFront(BlogHandler):
     """ Render blog's front page """
-    @login_required
     def get(self):
         """ Front page's GET render """
         posts = db.GqlQuery("""Select * from Post order
@@ -36,7 +35,6 @@ class BlogFront(BlogHandler):
 
 class PostPage(BlogHandler):
     """ Render blog's post """
-    @login_required
     def get(self, post_id):
         """ Render blog's post - get method """
         key = db.Key.from_path('Post', int(post_id), parent=utils.blog_key())
@@ -114,8 +112,7 @@ class LikePost(BlogHandler):
             message = "Authors can't like their own post"
             self.render('front.html', message=message)
         else:
-            post.likes = int(post.likes) + 1
-            post.authorLiked = True
+            post.liked_by.append(post.author.key().id())
             post.save()
 
             self.redirect('/blog/%s' % str(post.key().id()))
@@ -136,11 +133,10 @@ class UnlikePost(BlogHandler):
             return
 
         if post.author.key().id() == self.user.key().id():
-            message = "Authors can't like their post"
+            message = "Authors can't unlike their own post"
             self.render('front.html', message=message)
         else:
-            post.likes = int(post.likes) - 1
-            post.authorLiked = False
+            post.liked_by.remove(post.author.key().id())
             post.save()
 
             self.redirect('/blog/%s' % str(post.key().id()))
